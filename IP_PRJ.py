@@ -3,7 +3,7 @@ import customtkinter as tk
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="namgandhi_3260",
+  password="pass",
   database = "IP_PROJECT"
 )
 
