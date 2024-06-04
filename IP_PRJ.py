@@ -2,12 +2,12 @@ import mysql.connector
 import typer
 import tabulate
 import inquirer
-#mydb = mysql.connector.connect(
-#  host="localhost",
-#  user="root",
-#  password="pass",
-#  database = "IP_PROJECT"
-#)
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="pass",
+  database = "IP_PROJECT"
+)
 
 
 
