@@ -25,7 +25,7 @@ def main():
     func()
 
 def Library():
-    #Logic for Library
+    """Allows you to look at books. Filtering/searching included."""
     choice1 = inquirer.list_input("Filters? or Nah!", choices = ["NoFilter","Search", "Year", "Author", "Tags","back"])
     if choice1 == "back":
         main()
@@ -34,6 +34,7 @@ def Library():
         func1("Library")
 
 def AddBook():
+    """Used to add a new book to the library."""
     book_name = typer.prompt("Enter the name of the book ")
     Auth_name = typer.prompt("Enter the name of the author ")
     isbn = int(typer.prompt("Enter the ISBN of the book "))
@@ -56,6 +57,7 @@ def RemoveBook():
     print(cursor.rowcount, "record(s) deleted")
 
 def IssueBook():
+    """Can be used to issue a book."""
     id = typer.prompt("Enter the SchoolID of the borrower ")
     l = Search("IssueBook")
     sql = f"UPDATE BOOKS SET STATUS = STATUS+1 WHERE NAME = '{l[0]}'"
@@ -65,6 +67,7 @@ def IssueBook():
     print(cursor.rowcount, "record(s) affected")
 
 def ReturnBook():
+    """Can be used when the book is returned."""
     id = typer.prompt("Enter the SchoolID of the person ")
     l = Search("ReturnBook")
     sql = f"UPDATE BOOKS SET STATUS = STATUS-1 WHERE NAME = '{l[0]}'"
@@ -74,6 +77,7 @@ def ReturnBook():
     print(cursor.rowcount, "record(s) affected")
 
 def Nofilter():
+    """Daughter function of Library, displays all the books without filter."""
     cursor.execute("SELECT * FROM BOOKS")
     res = cursor.fetchall()
     res = list(res)
@@ -81,7 +85,7 @@ def Nofilter():
     print(tabulate(res, headers = Headers))
 
 def Search(parent):
-    """Contains choices, and calls other functions to search."""
+    """Calls other functions to search."""
     ch2  = inquirer.list_input("Search By:" ,choices = ["BookName", "ISBN", "back"])
     if ch2 == "back":
         f2 = globals()[parent]
@@ -92,6 +96,7 @@ def Search(parent):
         return res
 
 def Year():
+    """Daughter function of Library, searches in a range if years."""
     ch5  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
     if ch5 == "back":
         f6 = globals()["Library"]
@@ -107,7 +112,7 @@ def Year():
         return res
 
 def Author():
-    """Fetches data on the basis of the author of the book from SQL database, prints it (tabulated) and returns a list."""
+    """Daughter function of Library, fetches data on the basis of the author of the book from SQL database, prints it (tabulated) and returns a list."""
     ch7  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
     if ch7 == "back":
         f8 = globals()["Library"]
@@ -122,6 +127,7 @@ def Author():
         return res
     
 def Tags():
+    """Daughter function of Library, filters books on the basis of tags."""
     ch6  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
     if ch6 == "back":
         f7 = globals()["Library"]
@@ -139,9 +145,8 @@ def Tags():
         print(tabulate(res, headers = Headers))
         return res
 
-
 def BookName():
-    """Fetches data on the basis of the name of the book from SQL database, prints it (tabulated) and returns a list."""
+    """Daughte function of Search, fetches data on the basis of the name of the book from SQL database, prints it (tabulated) and returns a list."""
     ch4  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
     if ch4 == "back":
         f5 = globals()["Search"]
@@ -155,9 +160,8 @@ def BookName():
         print(tabulate(res, headers = Headers))
         return res
 
-
 def ISBN():
-    """Fetches data on the basis of the ISBN of the book from SQL database, prints it (tabulated) and returns a list."""
+    """Daughte function of Search, fetches data on the basis of the ISBN of the book from SQL database, prints it (tabulated) and returns a list."""
     ch4  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
     if ch4 == "back":
         f3 = globals()["Search"]
