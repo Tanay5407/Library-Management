@@ -2,6 +2,7 @@ import mysql.connector
 import typer
 import tabulate
 import inquirer
+from datetime import date
 mydb = mysql.connector.connect(
   host="localhost",
   user="root",
@@ -31,106 +32,6 @@ def Library():
     else:
         func1 = globals()[choice1]
         func1("Library")
-
-def Search(parent):
-    """Contains choices, and calls other functions to search."""
-    ch2  = inquirer.list_input("Search By:" ,choices = ["BookName", "ISBN", "back"])
-    if ch2 == "back":
-        f2 = globals()[parent]
-        f2()
-    else:
-        f2 = globals()[ch2]
-        res = f2()
-        return res
-
-
-def BookName():
-    """Fetches data on the basis of the name of the book from SQL database, prints it (tabulated) and returns a list."""
-    ch4  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
-    if ch4 == "back":
-        f5 = globals()["Search"]
-        f5()
-    else:
-        name:str = typer.prompt("Enter the name of the Book")
-        cursor.execute(f"SELECT * FROM BOOKS WHERE NAME = {name}")
-        res = cursor.fetchone()
-        res = list(res)
-        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
-        print(tabulate(res, headers = Headers))
-        return res
-
-
-def ISBN():
-    """Fetches data on the basis of the ISBN of the book from SQL database, prints it (tabulated) and returns a list."""
-    ch4  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
-    if ch4 == "back":
-        f3 = globals()["Search"]
-        f3()
-    else:
-        isbn = int(typer.prompt("Enter the ISBN ID of the Book:"))
-        cursor.execute(f"SELECT * FROM BOOKS WHERE ISBN = {isbn}")
-        res = cursor.fetchone()
-        res = list(res)
-        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
-        print(tabulate(res, headers = Headers))
-        return res
-
-def Author():
-    """Fetches data on the basis of the author of the book from SQL database, prints it (tabulated) and returns a list."""
-    ch7  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
-    if ch7 == "back":
-        f8 = globals()["Library"]
-        f8()
-    else:
-        Au = int(typer.prompt("Enter the Author of the Book:"))
-        cursor.execute(f"SELECT * FROM BOOKS WHERE AUTHOR = {Au}")
-        res = cursor.fetchall()
-        res = list(res)
-        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
-        print(tabulate(res, headers = Headers))
-        return res
-    
-
-def Nofilter():
-    cursor.execute("SELECT * FROM BOOKS")
-    res = cursor.fetchall()
-    res = list(res)
-    Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
-    print(tabulate(res, headers = Headers))
-
-
-def Date():
-    ch5  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
-    if ch5 == "back":
-        f6 = globals()["Library"]
-        f6()
-    else:
-        date_ini = typer.prompt("Enter the starting year(YYYY) for the search:")
-        date_fin = typer.prompt("Enter the ending year(YYYY) for the search:")
-        cursor.execute(f"SELECT * FROM BOOKS WHERE DATEOFPUBLISHING > '{date_ini}' and DATEOFPUBLISHING < '{date_fin}'")
-        res = cursor.fetchall()
-        res = list(res)
-        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
-        print(tabulate(res, headers = Headers))
-        return res
-    
-def Tags():
-    ch6  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
-    if ch6 == "back":
-        f7 = globals()["Library"]
-        f7()
-    else:
-        t = typer.prompt("Enter the tags separated by comma.")
-        ls = t.split(seperator = ",")
-        for item in ls:
-            item.strip()
-        s = "%".join(ls)
-        cursor.execute(f"SELECT * FROM BOOKS WHERE TAGS LIKE '%{s}%'")
-        res = cursor.fetchall()
-        res = list(res)
-        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
-        print(tabulate(res, headers = Headers))
-        return res
 
 def AddBook():
     book_name = typer.prompt("Enter the name of the book ")
@@ -171,6 +72,107 @@ def ReturnBook():
     # write to .csv or .txt logic for logs
     mydb.commit()
     print(cursor.rowcount, "record(s) affected")
+
+def Nofilter():
+    cursor.execute("SELECT * FROM BOOKS")
+    res = cursor.fetchall()
+    res = list(res)
+    Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
+    print(tabulate(res, headers = Headers))
+
+def Search(parent):
+    """Contains choices, and calls other functions to search."""
+    ch2  = inquirer.list_input("Search By:" ,choices = ["BookName", "ISBN", "back"])
+    if ch2 == "back":
+        f2 = globals()[parent]
+        f2()
+    else:
+        f2 = globals()[ch2]
+        res = f2()
+        return res
+
+def Year():
+    ch5  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
+    if ch5 == "back":
+        f6 = globals()["Library"]
+        f6()
+    else:
+        date_ini = typer.prompt("Enter the starting year(YYYY) for the search:")
+        date_fin = typer.prompt("Enter the ending year(YYYY) for the search:")
+        cursor.execute(f"SELECT * FROM BOOKS WHERE DATEOFPUBLISHING > '{date_ini}' and DATEOFPUBLISHING < '{date_fin}'")
+        res = cursor.fetchall()
+        res = list(res)
+        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
+        print(tabulate(res, headers = Headers))
+        return res
+
+def Author():
+    """Fetches data on the basis of the author of the book from SQL database, prints it (tabulated) and returns a list."""
+    ch7  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
+    if ch7 == "back":
+        f8 = globals()["Library"]
+        f8()
+    else:
+        Au = int(typer.prompt("Enter the Author of the Book:"))
+        cursor.execute(f"SELECT * FROM BOOKS WHERE AUTHOR = {Au}")
+        res = cursor.fetchall()
+        res = list(res)
+        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
+        print(tabulate(res, headers = Headers))
+        return res
+    
+def Tags():
+    ch6  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
+    if ch6 == "back":
+        f7 = globals()["Library"]
+        f7()
+    else:
+        t = typer.prompt("Enter the tags separated by comma.")
+        ls = t.split(seperator = ",")
+        for item in ls:
+            item.strip()
+        s = "%".join(ls)
+        cursor.execute(f"SELECT * FROM BOOKS WHERE TAGS LIKE '%{s}%'")
+        res = cursor.fetchall()
+        res = list(res)
+        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
+        print(tabulate(res, headers = Headers))
+        return res
+
+
+def BookName():
+    """Fetches data on the basis of the name of the book from SQL database, prints it (tabulated) and returns a list."""
+    ch4  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
+    if ch4 == "back":
+        f5 = globals()["Search"]
+        f5()
+    else:
+        name:str = typer.prompt("Enter the name of the Book")
+        cursor.execute(f"SELECT * FROM BOOKS WHERE NAME = {name}")
+        res = cursor.fetchone()
+        res = list(res)
+        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
+        print(tabulate(res, headers = Headers))
+        return res
+
+
+def ISBN():
+    """Fetches data on the basis of the ISBN of the book from SQL database, prints it (tabulated) and returns a list."""
+    ch4  = inquirer.list_input("Are you sure?" ,choices = ["Continue", "back"])
+    if ch4 == "back":
+        f3 = globals()["Search"]
+        f3()
+    else:
+        isbn = int(typer.prompt("Enter the ISBN ID of the Book:"))
+        cursor.execute(f"SELECT * FROM BOOKS WHERE ISBN = {isbn}")
+        res = cursor.fetchone()
+        res = list(res)
+        Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
+        print(tabulate(res, headers = Headers))
+        return res
+
+
+
 
 
 
