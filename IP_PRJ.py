@@ -104,7 +104,7 @@ def Year():
     else:
         date_ini = typer.prompt("Enter the starting year(YYYY) for the search:")
         date_fin = typer.prompt("Enter the ending year(YYYY) for the search:")
-        cursor.execute(f"SELECT * FROM BOOKS WHERE DATEOFPUBLISHING > '{date_ini}' and DATEOFPUBLISHING < '{date_fin}'")
+        cursor.execute(f"SELECT * FROM BOOKS WHERE YEAROFPUBLISHING > '{date_ini}' and YEAROFPUBLISHING < '{date_fin}'")
         res = cursor.fetchall()
         res = list(res)
         Headers = ["NAME", "AUTHOTR", "ISBN", "YEAR OF PUBLISHING","TAGS", "STATUS", "TOTAL"]
