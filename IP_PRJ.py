@@ -14,13 +14,7 @@ Headers = ["NAME", "AUTHOR", "ISBN", "YEAR OF ADDING","TAGS", "STATUS", "TOTAL"]
 
 def main():
     """This function basically is a container for the starting statements. Calls other functions as per user input."""
-    que = inquirer.list_input("What do you want to do?", choices = ["Library", "AddBook", "RemoveBook", "IssueBook", "ReturnBook"])
-
-    # You will see the next two lines of code multiple times in the program, what they basically do is call the function by the name(of the function to be called) given as a string. 
-    # How does it work? Well...
-    # The globals() function basically returns a dictionary of all the methods that are active in the program, which has names(strings) as keys and functions as values.
-    # The first line retrieves the function from the dictionary and the second line calls it.
-    
+    que = inquirer.list_input("What do you want to do?", choices = ["Library", "AddBook", "RemoveBook", "IssueBook", "ReturnBook"])  
     func = globals()[que]
     func()
 
@@ -50,7 +44,6 @@ def AddBook():
         AddBook()
     else:
         sql = f"INSERT INTO BOOKS (NAME, AUTHOR, ISBN, YEAR_OF_ADDING, TAGS, STATUS, TOTAL) VALUES ('{book_name}', '{Auth_name}', '{isbn}', '{doa}','{tags}', {stat},{total})"
-        #val = (book_name, Auth_name, isbn, doa, tags, stat, total)
         cursor.execute(sql)
         mydb.commit()
         logger(isbn, sid, 'ADDED')
@@ -80,7 +73,6 @@ def IssueBook():
     elif res[0] < res[1]:
         sql = f"UPDATE BOOKS SET STATUS = STATUS+1 WHERE ISBN = '{l[2]}'"
         cursor.execute(sql)
-        # write to .csv or .txt logic for logs
         mydb.commit()
         logger(l[2], sid, 'ISSUED')
         print(l[0], "Issued")
